@@ -48,13 +48,16 @@ gh release create v0.1.0 dist/*.whl dist/*.tar.gz doc-html-skill-0.1.0.tgz \
 ## Manual publish (owner only)
 
 One guided script — preflights the artifacts, re-runs the hygiene gate,
-prompts per registry, asks for the PyPI token (hidden input) and runs
-`npm login` if needed, then offers post-publish verification:
+prompts per registry, asks for the PyPI token (hidden input), and for npm
+uses (in order) an `NPM_TOKEN` env var, an existing `npm login` session, or
+prompts for a token / interactive login. Tokens go into a chmod-600 throwaway
+userconfig, never argv or your `~/.npmrc`. Post-publish verification offered:
 
 ```bash
 bash scripts/publish_release.sh            # both registries
 bash scripts/publish_release.sh --pypi-only
 bash scripts/publish_release.sh --npm-only
+NPM_TOKEN=npm_xxx bash scripts/publish_release.sh --npm-only   # token via env
 ```
 
 Or by hand:

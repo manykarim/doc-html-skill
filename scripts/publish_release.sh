@@ -82,13 +82,42 @@ echo
 
 # ---------------------------------------------------------------- npm
 if [ "$DO_NPM" = 1 ] && confirm "Publish ${TGZ} to npm (--access public)?"; then
-  if npm whoami >/dev/null 2>&1; then
+  NPMRC=""
+  cleanup_npmrc() { [ -n "$NPMRC" ] && rm -f "$NPMRC"; NPMRC=""; }
+  trap cleanup_npmrc EXIT
+
+  use_token() { # writes a throwaway userconfig so the token never hits argv/.npmrc
+    NPMRC="$(mktemp)"
+    chmod 600 "$NPMRC"
+    printf '//registry.npmjs.org/:_authToken=%s\n' "$1" > "$NPMRC"
+  }
+
+  if [ -n "${NPM_TOKEN:-}" ]; then
+    echo "npm: using token from NPM_TOKEN env"
+    use_token "$NPM_TOKEN"
+  elif npm whoami >/dev/null 2>&1; then
     echo "npm: logged in as $(npm whoami)"
   else
-    echo "npm: not logged in — starting interactive 'npm login' (browser flow)…"
-    npm login
+    echo "npm: not logged in. Auth options:"
+    echo "  1) access token (create at https://www.npmjs.com/settings/~/tokens — granular, packages:read-write)"
+    echo "  2) interactive 'npm login' (browser flow)"
+    read -r -p "Choose [1/2]: " auth_choice
+    if [ "$auth_choice" = "1" ]; then
+      read -r -s -p "npm token (input hidden, starts with npm_): " NPM_TOKEN_IN; echo
+      [ -n "$NPM_TOKEN_IN" ] || { echo "empty token — aborting npm publish"; exit 2; }
+      use_token "$NPM_TOKEN_IN"
+      unset NPM_TOKEN_IN
+    else
+      npm login
+    fi
   fi
-  npm publish "$TGZ" --access public
+
+  if [ -n "$NPMRC" ]; then
+    NPM_CONFIG_USERCONFIG="$NPMRC" npm publish "$TGZ" --access public
+    cleanup_npmrc
+  else
+    npm publish "$TGZ" --access public
+  fi
   echo "npm: published — https://www.npmjs.com/package/doc-html-skill"
   if confirm "Verify with npx?"; then
     npx --yes "doc-html-skill@${VERSION}" list >/dev/null \
