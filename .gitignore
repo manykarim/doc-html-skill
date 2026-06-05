@@ -25,3 +25,7 @@ bench/runs/
 
 # Local experiment scratch
 experiments/pptr.json
+
+# Claude Code local state (never publish; .claude/skills + commands ARE the product)
+.claude/settings.local.json
+CLAUDE.local.md
