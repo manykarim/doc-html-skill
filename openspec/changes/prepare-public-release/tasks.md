@@ -27,7 +27,7 @@
 
 ## 5. Repo, tag, release (checkpoint with owner before each outward step)
 
-- [ ] 5.1 `git init`, stage curated tree, run hygiene gate, initial commit
-- [ ] 5.2 CHECKPOINT → `gh repo create manykarim/doc-html-skill --public --source . --push`
-- [ ] 5.3 Build release assets: wheel + sdist, npm tarball, `doc-html-skill-skills-0.1.0.zip`, one demo HTML (rf-mcp docs-site)
-- [ ] 5.4 CHECKPOINT → annotated tag `v0.1.0`; `gh release create v0.1.0` with generated notes and the four+demo assets; verify release page lists all assets
+- [x] 5.1 `git init`, stage curated tree, run hygiene gate, initial commit
+- [x] 5.2 CHECKPOINT → `gh repo create manykarim/doc-html-skill --public --source . --push`
+- [x] 5.3 Build release assets: wheel + sdist, npm tarball, `doc-html-skill-skills-0.1.0.zip`, one demo HTML (rf-mcp docs-site)
+- [x] 5.4 CHECKPOINT → annotated tag `v0.1.0`; `gh release create v0.1.0` with generated notes and the four+demo assets; verify release page lists all assets
