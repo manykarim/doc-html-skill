@@ -47,6 +47,18 @@ gh release create v0.1.0 dist/*.whl dist/*.tar.gz doc-html-skill-0.1.0.tgz \
 
 ## Manual publish (owner only)
 
+One guided script — preflights the artifacts, re-runs the hygiene gate,
+prompts per registry, asks for the PyPI token (hidden input) and runs
+`npm login` if needed, then offers post-publish verification:
+
+```bash
+bash scripts/publish_release.sh            # both registries
+bash scripts/publish_release.sh --pypi-only
+bash scripts/publish_release.sh --npm-only
+```
+
+Or by hand:
+
 ```bash
 # PyPI — needs a PyPI API token (~/.pypirc or TWINE_PASSWORD)
 pip install twine
